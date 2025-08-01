@@ -15,7 +15,16 @@
 - `.R`: 
 
 ## Getting Started
+```
+# Load source files
 
+# Define parameters (e.g., true toxicity and efficacy probabilities for 5 dose levels)
+
+# Run the trial simulation
+
+# View OBD selection result
+
+```
 ## Reference
 If you use this code, please cite: 
 > Sun, H., Tu, J., Ananthakrishnan, R., & Kim, E. (2025). TITE-STEIN: Time-to-event Simple Toxicity and Efficacy Interval Design to Accelerate Phase I/II Trials. *Journal of Biopharmaceutical Statistics* (under review).
