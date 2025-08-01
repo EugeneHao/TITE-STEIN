@@ -8,3 +8,14 @@
 - Includes a verification step to avoid selecting suboptimal or non-existent OBDs
 - Demonstrated improved operating characteristics compared to other TITE-based designs through extensive simulations
 - Straightforward to implement with no complex dose-toxicity and dose-efficacy modeling assumptions
+
+## Repository Contents
+
+- `.R`: Main function used for simulation studies in *Sun, H., Tu, J., Ananthakrishnan, R., & Kim, E. (2025). TITE-STEIN: Time-to-event Simple Toxicity and Efficacy Interval Design to Accelerate Phase I/II Trials. Journal of Biopharmaceutical Statistics (under review).*
+- `.R`: 
+
+## Getting Started
+
+## Reference
+If you use this code, please cite: 
+> Sun, H., Tu, J., Ananthakrishnan, R., & Kim, E. (2025). TITE-STEIN: Time-to-event Simple Toxicity and Efficacy Interval Design to Accelerate Phase I/II Trials. *Journal of Biopharmaceutical Statistics* (under review).
