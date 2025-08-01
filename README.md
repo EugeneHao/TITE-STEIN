@@ -64,7 +64,7 @@ cutoff_tox = 0.95;    	 # cutoff probability for safety elimination rule
 cutoff_eff = 0.90;       # cutoff probability for futility elimination rule 
 
 # One simulation setting 
-dN = 5;             										 # number of doses 
+dN = 5;    # number of doses 
 pV <- c(0.05, 0.10, 0.15, 0.30, 0.40)    # toxicity probability 
 qV <- c(0.30, 0.50, 0.70, 0.75, 0.80)    # efficacy probability 
 ```
