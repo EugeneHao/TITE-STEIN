@@ -13,7 +13,7 @@
 `run_TITE-STEIN.R`: Main function for conducting simulation study using TITE-STEIN design with replications
 
 ```R
-# Preparation #### 
+# Preparation
 
 library(tidyverse)
 library(Rcpp)
@@ -22,7 +22,7 @@ library(inline)
 library(Iso)
 library(parallel)
 
-# load all the other functions 
+# Load all the other functions 
 
 source("fun_STEIN_OBD_new.R")
 source("fun_STEIN_OBD.R")
@@ -35,7 +35,7 @@ source("fun_findOBD.R")
 source("fun_pava.R")
 ```
 ```R
-# Design Settings #### 
+# Design Settings
 
 pT = 0.3;       # maximum acceptable toxicity probability 
 qE = 0.25;      # minimum acceptable efficacy probability 
@@ -72,7 +72,7 @@ qV <- c(0.30, 0.50, 0.70, 0.75, 0.80)    # efficacy probability
 ```R
 # Run Simulation for TITE-STEIN #### 
 
-TITE_STEIN_result <- 
+TITE_STEIN_result = 
   fun_TITE_STEIN_fixsimu(dN, pV, qV, pT, pE, qE, pqcorr, 
                          csize, cN, design = "TITE-STEIN", utility = TRUE,
                          current = 1, doselimit = Inf, u11, u00, 
@@ -96,7 +96,7 @@ TITE_STEIN_result <-
 > + `accrual_random = FALSE`:  enroll patient every `accrual` days; if set as true, then the accrual time follows a uniform distribution U(0, 2`accrual`)
 > + `OBDverify = TRUE`: include the OBD verification step. 
 
-# Simulation Results
+## Simulation Results
 
 ```R
 head(TITE_STEIN_result)
