@@ -8,7 +8,7 @@
 - Includes a OBD verification step to avoid selecting an unsafe or futile dose as the OBD
 - Straightforward to implement with no complex dose-toxicity and dose-efficacy modeling assumptions
 
-## Repository Contents
+## User Guide
 
 `run_TITE-STEIN.R`: Main function for conducting simulation study using TITE-STEIN design with replications
 
