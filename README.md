@@ -3,14 +3,14 @@
 **TITE-STEIN** (Time-to-event Simple Toxicity and Efficacy Interval Design) is a model-assisted dose-finding design developed to accelerate Phase I/II clinical trials by incorporating time-to-event toxicity and efficacy outcomes. It extends the STEIN framework to handle late-onset outcomes and introduces an **Optimal Biological Dose (OBD) verification** procedure to mitigate the risk of selecting inadmissible doses.
 
 ## Design Features
-- Incorporates both toxicity and efficacy outcomes for OBD selection
-- Supports real-time dose decision-making using late-onset toxicity and efficacy outcomes
-- Includes a OBD verification step to avoid selecting an unsafe or futile dose as the OBD
-- Straightforward to implement with no complex dose-toxicity and dose-efficacy modeling assumptions
+- Incorporates both toxicity and efficacy outcomes for OBD selection.
+- Supports real-time dose decision-making using late-onset toxicity and efficacy outcomes.
+- Includes an OBD verification step to avoid selecting an unsafe or futile dose as the OBD.
+- Straightforward to implement with no complex dose-toxicity and dose-efficacy modeling assumptions.
 
 ## User Guide
 
-`run_TITE-STEIN.R`: Main function for conducting simulation study using TITE-STEIN design with replications
+`run_TITE-STEIN.R`: Main function for conducting a simulation study using TITE-STEIN design with replications.
 
 ```R
 # Preparation
@@ -65,12 +65,12 @@ cutoff_eff = 0.90;       # cutoff probability for futility elimination rule
 
 # One simulation setting 
 dN = 5;    # number of doses 
-pV <- c(0.05, 0.10, 0.15, 0.30, 0.40)    # toxicity probability 
-qV <- c(0.30, 0.50, 0.70, 0.75, 0.80)    # efficacy probability 
+pV = c(0.05, 0.10, 0.15, 0.30, 0.40)    # toxicity probability 
+qV = c(0.30, 0.50, 0.70, 0.75, 0.80)    # efficacy probability 
 ```
 
 ```R
-# Run Simulation for TITE-STEIN #### 
+# Run Simulation for TITE-STEIN
 
 TITE_STEIN_result = 
   fun_TITE_STEIN_fixsimu(dN, pV, qV, pT, pE, qE, pqcorr, 
@@ -89,9 +89,9 @@ TITE_STEIN_result =
 
 > Other simulation settings in `fun_TITE_STEIN_fixsimu` :  
 >
-> + `utility = TRUE`: use utility score to determine the true OBD; otherwise the OBD is the dose with the highest efficacy probability among those with acceptable toxicity. If multiple doses share the highest utility score or highest efficacy probability, the OBD is the dose with the lowest toxicity probability. 
+> + `utility = TRUE`: use utility score to determine the true OBD; otherwise, the OBD is the dose with the highest efficacy probability among those with acceptable toxicity. If multiple doses share the highest utility score or highest efficacy probability, the OBD is the dose with the lowest toxicity probability. 
 > + `current = 1`: the start dose is the dose level 1, i.e., the lowest dose level.  
-> + `doselimit = Inf`: the trial will end until the maximum sample size is reached or no suitable dose for the next patient cohort during the trial. Users can let the trial stop when a dose has enrolled a specific    numbrer of patients by setting `doselimit` to that number. 
+> + `doselimit = Inf`: the trial will end when the maximum sample size is reached or no suitable dose for the next patient cohort during the trial. Users can let the trial stop when a dose has enrolled a specific number of patients by setting `doselimit` to that number. 
 > + `use_susp = TRUE`: apply accrual suspension rule 
 > + `accrual_random = FALSE`:  enroll patient every `accrual` days; if set as true, then the accrual time follows a uniform distribution U(0, 2`accrual`)
 > + `OBDverify = TRUE`: include the OBD verification step. 
@@ -117,26 +117,26 @@ doseDT.n4                NA 746.6938  9 18 18  0 0
 doseDT.n5                NA 798.0410 27  9  9  0 0
 ```
 
-+ `n`: maximum sample size 
-+ `trueOBD`: the true OBD given the true toxicity and efficacy probablility values based on utility score or maximum efficacy probability; `trueOBD = 0` if all doses are toxic; `trueOBD = -1` is all safe doses are futile. 
-+ `OBD`: the identified OBD through the simulation study 
-+ `rN`: number of remaining doses for OBD selection
++ `n`: maximum sample size.
++ `trueOBD`: the true OBD given the true toxicity and efficacy probability values based on utility score or maximum efficacy probability; `trueOBD = 0` if all doses are toxic; `trueOBD = -1` if all safe doses are futile. 
++ `OBD`: the identified OBD through the simulation study.
++ `rN`: number of remaining doses for OBD selection.
 + `select_OBD`: set to 1 if `OBD = trueOBD`; otherwise, set to 0
-+ `num_at_OBD`: number of patients assigned to the true OBD; if `trueOBD <= 0`, then `num_at_OBD = NA`  
-+ `risk_allocate`: equal to 1 if we assign less than 20% patietns to the true OBD; otherwise, set to 0. `risk_allocate = NA` if the true OBD does not exist. 
++ `num_at_OBD`: number of patients assigned to the true OBD; if `trueOBD <= 0`, then `num_at_OBD = NA`.  
++ `risk_allocate`: equal to 1 if we assign less than 20% patients to the true OBD; otherwise, set to 0. `risk_allocate = NA` if the true OBD does not exist. 
 + `num_overdose_OBD`: number of patients assigned to doses with toxicity probability greater than pT + 0.1 when the true OBD exists; set to NA if the true OBD does not exist. 
 + `num_overdose_nOBD`: number of patients assigned to doses with toxicity probability greater than pT + 0.1 when the true OBD does not exist; set to NA if the true OBD exists.
-+ `duration`: trial duration in days 
-+ `1`, `2`, ..., `d`: number of patients assigned to each dose level 
++ `duration`: trial duration in days.
++ `1`, `2`, ..., `d`: number of patients assigned to each dose level.
 
 
 
 We can summarize the replicated simulation results through the code below:  
 
 ```R
-# Summarize the simualtion replications  
+# Summarize the simulation replications  
 
-trueOBD <- findOBD_RDS(pV, qV, pT, qE, u11, u00)
+trueOBD = findOBD_RDS(pV, qV, pT, qE, u11, u00)
 
 TITE_STEIN_new_result %>% 
   summarise(design = unique(design), 
@@ -165,11 +165,11 @@ TITE_STEIN_new_result %>%
 1 TITE-STEIN 25.41886    67 1.7 21.9 67 9.1 0.2   0.1 6.429 14.127 20.592 3.711 0.114
 ```
 
-+ `dur`: average trial duration in month
-+ `p_OBD`: probability of correctly selecting the true OBD
-+ `p1`, ..., `pd`: probability of selecting each dose as the true OBD
-+ `p_rej`: probability of rejecting the trial without selecting any dose level as the OBD
-+ `n1`, ..., `nd`: number of patients assigned to each dose level 
++ `dur`: average trial duration in months.
++ `p_OBD`: probability of correctly selecting the true OBD.
++ `p1`, ..., `pd`: probability of selecting each dose as the true OBD.
++ `p_rej`: probability of rejecting the trial without selecting any dose level as the OBD.
++ `n1`, ..., `nd`: number of patients assigned to each dose level.
 
 
 
