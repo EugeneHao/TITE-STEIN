@@ -1,6 +1,6 @@
 # TITE-STEIN: A Time-to-Event Model-Assisted Design for Phase I/II Trials
 
-**TITE-STEIN** (Time-to-event Simple Toxicity and Efficacy Interval Design) is a model-assisted dose-finding design developed to accelerate Phase I/II clinical trials by incorporating time-to-event toxicity and efficacy outcomes. It extends the STEIN framework to handle late-onset outcomes and introduces an **Optimal Biological Dose (OBD) verification** procedure to mitigate the risk of selecting inadmissible doses.
+**TITE-STEIN** (Time-to-event Simple Toxicity and Efficacy Interval Design)[^1] is a model-assisted dose-finding design developed to accelerate Phase I/II clinical trials by incorporating time-to-event toxicity and efficacy outcomes. It extends the STEIN framework to handle late-onset outcomes and introduces an **Optimal Biological Dose (OBD) verification** procedure to mitigate the risk of selecting inadmissible doses.
 
 ## Design Features
 - Incorporates both toxicity and efficacy outcomes for OBD selection
@@ -63,14 +63,14 @@ w1 = 0.33; w2 = 1.09;    # weights in the utility function for OBD selection
 cutoff_tox = 0.95;    	 # cutoff probability for safety elimination rule 
 cutoff_eff = 0.90;       # cutoff probability for futility elimination rule 
 
-# One simulation setting 
+# Probability settings
 dN = 5;    # number of doses 
 pV <- c(0.05, 0.10, 0.15, 0.30, 0.40)    # toxicity probability 
 qV <- c(0.30, 0.50, 0.70, 0.75, 0.80)    # efficacy probability 
 ```
 
 ```R
-# Run Simulation for TITE-STEIN #### 
+# Run TITE-STEIN #### 
 
 TITE_STEIN_result = 
   fun_TITE_STEIN_fixsimu(dN, pV, qV, pT, pE, qE, pqcorr, 
@@ -134,7 +134,7 @@ doseDT.n5                NA 798.0410 27  9  9  0 0
 We can summarize the replicated simulation results through the code below:  
 
 ```R
-# Summarize the simualtion replications  
+# Summarize the replications  
 
 trueOBD <- findOBD_RDS(pV, qV, pT, qE, u11, u00)
 
@@ -171,9 +171,89 @@ TITE_STEIN_new_result %>%
 + `p_rej`: probability of rejecting the trial without selecting any dose level as the OBD
 + `n1`, ..., `nd`: number of patients assigned to each dose level 
 
+# Case STUDY
+
+This case study uses data from the TRANSCEND NHL 001 trial of lisocabtagene maraleucel (liso-cel) for patients with relapsed or refractory B-cell lymphomas [^2]. Patients were assigned to one of the three traget dose levels: 
+
++ DL1: $50 \times 10^6$ CAR$^+$ T cells 
++ DL2: $100 \times 10^6$ CAR$^+$ T cells 
++ DL3: $150 \times 10^6$ CAR$^+$ T cells 
+
+> The DL1D (two doses of $50 \times 10^6$ CAR$^+$ T cells given on day 1 and day 15) is not included because of the small sample size. 
+
+```R
+# Design Settings for the case study
+
+pT = 0.3;       # maximum acceptable toxicity probability 
+qE = 0.25;      # minimum acceptable efficacy probability 
+pqcorr = 0;     # correlation between the toxicity and efficacy probabilities 
+csize = 3;      # sample size per cohort 
+cN = 45;        # maximum number of cohorts 
+repsize = 1000;      # replication size 
+n_cores = 8;         # number of cores for parallel computation 
+accrual = 10;        # enroll 1 patient per 10 days 
+tox_win = 28;        # toxicity assessment window = 30 days 
+eff_win = 84;        # efficacy assessment window = 90 days 
+susp = 0.5;          # suspend accrual until 50% toxicity and efficacy results observed 
+
+tox_dist = "Uniform";  # time to toxicity outcome follows a uniform distribution 
+eff_dist = "Uniform";  # time to efficacy outcome follows a uniform distribution 
+tox_dist_hyper = NULL; # time to toxicity outcome does not have other distribution parameters 
+eff_dist_hyper = NULL; # time to efficacy outcome does not have other distribution parameters 
+u11 = 60;    # utility of having both DLT and efficacy response
+u00 = 40;    # utility of no DLT and no efficacy response
+
+# STEIN design parameters 
+psi1 = 0.3;      # null hypothesis of efficacy probability 
+psi2 = 0.8;      # alternative hypothesis of efficacy probability 
+w1 = 0.33; w2 = 1.09;    # weights in the utility function for OBD selection 
+cutoff_tox = 0.95;    	 # cutoff probability for safety elimination rule 
+cutoff_eff = 0.90;       # cutoff probability for futility elimination rule 
+
+# Probability settings
+dN = 3;    # number of doses 
+pV <- c(0.07, 0.10, 0.12)    # toxicity probability 
+qV <- c(0.65, 0.75, 0.75)    # efficacy probability 
+```
+
+
+
+```R
+# Run the case study
+fun_TITE_STEIN_fixsimu(dN, pV, qV, pT, pE, qE, pqcorr, 
+                       csize, cN, design = "TITE-STEIN", utility = TRUE,
+                       current = 1, doselimit = Inf, u11, u00, 
+                       cutoff_tox, cutoff_eff,  
+                       psi1, psi2, w1, w2,     
+                       repsize, n_cores,       
+                       accrual, susp, tox_win, eff_win, tox_dist, eff_dist, 
+                       use_susp = TRUE, 
+                       accrual_random = FALSE,
+                       OBDverify = TRUE) %>% 
+  summarise(design = unique(design), 
+            OBD99 = mean(OBD %in% c(-1, 0, 99), na.rm = T) * 100,
+            OBDother = mean(OBD == trueOBD, na.rm = T) * 100,
+            p1 = mean(OBD == 1, na.rm = T) * 100, 
+            p2 = mean(OBD == 2, na.rm = T) * 100,
+            p3 = mean(OBD == 3, na.rm = T) * 100, 
+            n1 = mean(`1`, na.rm = T), 
+            n2 = mean(`2`, na.rm = T), 
+            n3 = mean(`3`, na.rm = T), 
+            dur = mean(duration, na.rm = T)/30) %>% 
+  mutate(p_OBD = ifelse(trueOBD <= 0, OBD99, OBDother), 
+         p_rej = pmax(100 - p1 - p2 - p3, 0)) %>% 
+  select(-OBD99, -OBDother) %>% 
+  "["(,c("design", "dur", "p_OBD", paste0("p", 1:3), "p_rej", paste0("n", 1:3))) 
+```
+
+```R 
+      design      dur p_OBD   p1   p2   p3 p_rej     n1     n2     n3
+1 TITE-STEIN 30.68859  55.6 28.5 55.6 15.9     0 51.903 65.538 17.559
+```
+
 
 
 ## Reference
 
-If you use this code, please cite: 
-> Sun, H., Tu, J., Ananthakrishnan, R., & Kim, E. (2025). TITE-STEIN: Time-to-event Simple Toxicity and Efficacy Interval Design to Accelerate Phase I/II Trials. *Journal of Biopharmaceutical Statistics* (under review).
+[^1]: Sun, H., Tu, J., Ananthakrishnan, R., & Kim, E. (2025). TITE-STEIN: Time-to-event Simple Toxicity and Efficacy Interval Design to Accelerate Phase I/II Trials. *Journal of Biopharmaceutical Statistics* (under review).
+[^2]: Abramson, Jeremy S., M. Lia Palomba, Leo I. Gordon, Matthew A. Lunning, Michael Wang, Jon Arnason, Amitkumar Mehta et al. "Lisocabtagene maraleucel for patients with relapsed or refractory large B-cell lymphomas (TRANSCEND NHL 001): a multicentre seamless design study." *The Lancet* 396, no. 10254 (2020): 839-852.
