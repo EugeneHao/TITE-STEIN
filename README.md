@@ -70,12 +70,6 @@ qV = c(0.30, 0.50, 0.70, 0.75, 0.80)    # efficacy probability
 ```
 
 ```R
-<<<<<<< HEAD
-# Run TITE-STEIN #### 
-=======
-# Run Simulation for TITE-STEIN
->>>>>>> de4373d48c43162942e544369f09024a886f6c6f
-
 TITE_STEIN_result = 
   fun_TITE_STEIN_fixsimu(dN, pV, qV, pT, pE, qE, pqcorr, 
                          csize, cN, design = "TITE-STEIN", utility = TRUE,
@@ -138,12 +132,6 @@ doseDT.n5                NA 798.0410 27  9  9  0 0
 We can summarize the replicated simulation results through the code below:  
 
 ```R
-<<<<<<< HEAD
-# Summarize the replications  
-=======
-# Summarize the simulation replications  
->>>>>>> de4373d48c43162942e544369f09024a886f6c6f
-
 trueOBD = findOBD_RDS(pV, qV, pT, qE, u11, u00)
 
 TITE_STEIN_new_result %>% 
@@ -183,9 +171,9 @@ TITE_STEIN_new_result %>%
 
 This case study uses data from the TRANSCEND NHL 001 trial of lisocabtagene maraleucel (liso-cel) for patients with relapsed or refractory B-cell lymphomas [^2]. Patients were assigned to one of the three traget dose levels: 
 
-+ DL1: $50 \times 10^6$ CAR$^+$ T cells 
-+ DL2: $100 \times 10^6$ CAR$^+$ T cells 
-+ DL3: $150 \times 10^6$ CAR$^+$ T cells 
++ DL1: $50 \times 10^6$ CAR^+ T cells 
++ DL2: $100 \times 10^6$ CAR^+ T cells 
++ DL3: $150 \times 10^6$ CAR^+ T cells 
 
 > The DL1D (two doses of $50 \times 10^6$ CAR$^+$ T cells given on day 1 and day 15) is not included because of the small sample size. 
 
